@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+//initial commit
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
     private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice;
