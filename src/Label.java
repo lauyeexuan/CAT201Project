@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,7 +9,7 @@ import javax.swing.border.Border;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
-    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblDelivery,lblPickup;
+    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize;
     private JComboBox<String> size;
     private JRadioButton rdJuice,rdWater,rdTea,rdCoffee;
     private ButtonGroup btnGroup;
@@ -48,9 +49,15 @@ public class Label extends JFrame implements ActionListener{
         size.setSelectedIndex(0);//default selection is small
         size.setSize(100, 35);
         size.setLocation(100, 50);
-        Border border= BorderFactory.createLineBorder(Color.YELLOW);
+        Border border= BorderFactory.createLineBorder(Color.BLACK);
         size.setBorder(border);
         add(size);
+
+        lblcupsize=new JLabel();
+        lblcupsize.setBounds(210,35,100,50);
+        lblcupsize.setIcon(resize(new ImageIcon("cupsize4.png"),lblcupsize.getWidth(),lblcupsize.getHeight()));
+        add (lblcupsize);
+
 
         lblBev = new JLabel("Select which type of beverage you want to order:");//a JLabel that labels the radioButtons
         lblBev.setSize(500, 50);
@@ -165,5 +172,16 @@ public class Label extends JFrame implements ActionListener{
     public static void main(String[] args) {
         new Label();
     }
+
+    public static ImageIcon resize(ImageIcon im, int w, int h) {
+        BufferedImage bi=new BufferedImage(w,h,BufferedImage.TRANSLUCENT);
+        Graphics2D gd=(Graphics2D) bi.createGraphics();
+        gd.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+        gd.drawImage(im.getImage(),0,0,w,h,null);
+        gd.dispose();
+        return new ImageIcon(bi);
+    }
 }
+
+
 
