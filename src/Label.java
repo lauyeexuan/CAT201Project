@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
-
+import java.text.DecimalFormat;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
@@ -16,6 +16,7 @@ public class Label extends JFrame implements ActionListener{
     private JTextField txtGlass;
     private JButton btnAdd,btnOrder;
     int amount_of;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
 
     public Label() {
@@ -104,11 +105,10 @@ public class Label extends JFrame implements ActionListener{
         add(lblGlass);
 
         txtGlass = new JTextField();//a JTextField to get how many glasses of beverage is the user want
-        txtGlass.setSize(50, 25);
+        txtGlass.setSize(70, 25);
         txtGlass.setLocation(220, 165);
         txtGlass.setBackground(new Color	(247, 219, 219));
         add(txtGlass);
-
 
 
         btnAdd = new JButton("Add");
@@ -166,7 +166,7 @@ public class Label extends JFrame implements ActionListener{
             }
 
             String[] values = {"Pick up","Delivery"};
-            double deliveryfee=0.0;
+            double deliveryfee=0.00;
             Object selected = JOptionPane.showInputDialog(null, "Order type: Pick up/Delivery", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
             if ( selected != null ){//null if the user cancels.
                 String orderType = selected.toString();
@@ -176,18 +176,34 @@ public class Label extends JFrame implements ActionListener{
                         deliveryfee=5;
                     }
                     else{
-                        deliveryfee = pay*0.1;
+                        deliveryfee = Double.parseDouble(df.format(pay*0.10));
                     }
                 }
                 report = report + " - " + deliveryfee +" TL\n";
                 pay = pay+deliveryfee;
             }
-            else{
-                System.out.println("User cancelled");
+
+
+            String promoCode=(String)JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
+            if(promoCode.equals("PROMO20")){
+                report = report + "Promotion: 20%\nDiscount: " + df.format(pay*0.20) + "TL";
+                pay = pay *0.80;
+            }
+            else if (promoCode.equals("PROMO30")){
+                report = report + "Promotion: 30%\nDiscount: " + df.format(pay*0.30) + "TL";
+                pay = pay*0.70;
             }
 
-            JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE);
-            JOptionPane.showMessageDialog(this,"You should pay "+pay+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE);
+
+
+            ImageIcon icon = new ImageIcon("order.png");
+            ImageIcon scaledicon=resize(icon,100,100);
+            JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
+
+
+            icon=new ImageIcon("checkout.png");
+            scaledicon=resize(icon,100,100);
+            JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
             lblReport.setText(null);
             btnOrder.setEnabled(false);
             list_of_bvr.clear();
