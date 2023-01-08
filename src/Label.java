@@ -9,10 +9,10 @@ import javax.swing.border.Border;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
-    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize;
+    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize,lblOrder;
     private JComboBox<String> size;
-    private JRadioButton rdJuice,rdWater,rdTea,rdCoffee;
-    private ButtonGroup btnGroup;
+    private JRadioButton rdJuice,rdWater,rdTea,rdCoffee,rdPickup,rdDelivery;
+    private ButtonGroup beverageGroup,orderGroup;
     private JTextField txtGlass;
     private JButton btnAdd,btnOrder;
     int amount_of;
@@ -51,6 +51,7 @@ public class Label extends JFrame implements ActionListener{
         size.setLocation(100, 50);
         Border border= BorderFactory.createLineBorder(Color.BLACK);
         size.setBorder(border);
+        size.setBackground(new Color(247, 219, 219));
         add(size);
 
         lblcupsize=new JLabel();
@@ -64,13 +65,12 @@ public class Label extends JFrame implements ActionListener{
         lblBev.setLocation(100, 75);
         add(lblBev);
 
-        btnGroup = new ButtonGroup();
+        beverageGroup = new ButtonGroup();
 
         rdJuice = new JRadioButton("Juice");
         rdJuice.setSize(75, 50);
         rdJuice.setLocation(100, 110);
         rdJuice.setBackground(Color.PINK);
-
         add(rdJuice);
 
         lbljuice= new JLabel();
@@ -93,20 +93,44 @@ public class Label extends JFrame implements ActionListener{
         rdCoffee.setBackground(Color.PINK);
         add(rdCoffee);
 
-        btnGroup.add(rdJuice);
-        btnGroup.add(rdWater);
-        btnGroup.add(rdTea);
-        btnGroup.add(rdCoffee);
+        beverageGroup.add(rdJuice);
+        beverageGroup.add(rdWater);
+        beverageGroup.add(rdTea);
+        beverageGroup.add(rdCoffee);
 
-        lblGlass = new JLabel("Type how many glasses you want to order:");//a JLabel that labels the Text Field
-        lblGlass.setSize(500, 50);
-        lblGlass.setLocation(100, 145);
+        lblGlass = new JLabel("How many glasses:");//a JLabel that labels the Text Field
+        lblGlass.setSize(150, 50);
+        lblGlass.setLocation(100, 150);
         add(lblGlass);
 
         txtGlass = new JTextField();//a JTextField to get how many glasses of beverage is the user want
         txtGlass.setSize(50, 25);
-        txtGlass.setLocation(100, 185);
+        txtGlass.setLocation(220, 165);
+        txtGlass.setBackground(new Color	(247, 219, 219));
         add(txtGlass);
+
+        lblOrder=new JLabel("Order type:");
+        lblOrder.setSize(100,25);
+        lblOrder.setLocation(100,200);
+        add(lblOrder);
+
+        orderGroup = new ButtonGroup();
+
+        rdPickup= new JRadioButton("Pick up");
+        rdPickup.setSize(75, 30);
+        rdPickup.setLocation(175, 198);
+        rdPickup.setBackground(Color.PINK);
+        add(rdPickup);
+
+        rdDelivery= new JRadioButton("Delivery");
+        rdDelivery.setSize(75, 30);
+        rdDelivery.setLocation(250, 198);
+        rdDelivery.setBackground(Color.PINK);
+        add(rdDelivery);
+
+        orderGroup.add(rdDelivery);
+        orderGroup.add(rdPickup);
+
 
         btnAdd = new JButton("Add");
         btnAdd.setSize(120, 40);
@@ -129,7 +153,7 @@ public class Label extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String size_of = (String)size.getSelectedItem();
         if(e.getSource().equals(btnAdd)) {
-            if( rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected() && !(txtGlass.getText().isEmpty())) {
+            if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) && (rdPickup.isSelected() || rdDelivery.isSelected())) {
                 try {
                     amount_of  = Integer.parseInt(txtGlass.getText().trim());
                     Beverage bvg;
@@ -140,12 +164,20 @@ public class Label extends JFrame implements ActionListener{
                     txtGlass.setText(null);
                     list_of_bvr.add(bvg);
                     lblReport.setText(bvg.toString()+" added");
-                    btnGroup.clearSelection();
+                    beverageGroup.clearSelection();
+                    orderGroup.clearSelection();
                     btnOrder.setEnabled(true);
                 }
                 catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
                     JOptionPane.showMessageDialog(this, "Enter an integer as amount");
                 }
+            }
+            else if(!(rdPickup.isSelected() || rdDelivery.isSelected())){
+                if (txtGlass.getText().isEmpty())
+                    if(!(rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()))
+                        JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount.\nChoose an order type: Pick up or Delivery");
+                    else
+                        JOptionPane.showMessageDialog(this, "Enter an integer as amount.\nChoose an order type: Pick up or Delivery");
             }
             else { JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount");
                 //if none of the radio buttons are selected or the textField is empty
