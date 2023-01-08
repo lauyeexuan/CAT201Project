@@ -9,10 +9,10 @@ import javax.swing.border.Border;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
-    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize,lblOrder;
+    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize;
     private JComboBox<String> size;
     private JRadioButton rdJuice,rdWater,rdTea,rdCoffee,rdPickup,rdDelivery;
-    private ButtonGroup beverageGroup,orderGroup;
+    private ButtonGroup beverageGroup;
     private JTextField txtGlass;
     private JButton btnAdd,btnOrder;
     int amount_of;
@@ -109,27 +109,6 @@ public class Label extends JFrame implements ActionListener{
         txtGlass.setBackground(new Color	(247, 219, 219));
         add(txtGlass);
 
-        lblOrder=new JLabel("Order type:");
-        lblOrder.setSize(100,25);
-        lblOrder.setLocation(100,200);
-        add(lblOrder);
-
-        orderGroup = new ButtonGroup();
-
-        rdPickup= new JRadioButton("Pick up");
-        rdPickup.setSize(75, 30);
-        rdPickup.setLocation(175, 198);
-        rdPickup.setBackground(Color.PINK);
-        add(rdPickup);
-
-        rdDelivery= new JRadioButton("Delivery");
-        rdDelivery.setSize(75, 30);
-        rdDelivery.setLocation(250, 198);
-        rdDelivery.setBackground(Color.PINK);
-        add(rdDelivery);
-
-        orderGroup.add(rdDelivery);
-        orderGroup.add(rdPickup);
 
 
         btnAdd = new JButton("Add");
@@ -153,7 +132,7 @@ public class Label extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String size_of = (String)size.getSelectedItem();
         if(e.getSource().equals(btnAdd)) {
-            if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) && (rdPickup.isSelected() || rdDelivery.isSelected())) {
+            if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) ) {
                 try {
                     amount_of  = Integer.parseInt(txtGlass.getText().trim());
                     Beverage bvg;
@@ -165,19 +144,11 @@ public class Label extends JFrame implements ActionListener{
                     list_of_bvr.add(bvg);
                     lblReport.setText(bvg.toString()+" added");
                     beverageGroup.clearSelection();
-                    orderGroup.clearSelection();
                     btnOrder.setEnabled(true);
                 }
                 catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
                     JOptionPane.showMessageDialog(this, "Enter an integer as amount");
                 }
-            }
-            else if(!(rdPickup.isSelected() || rdDelivery.isSelected())){
-                if (txtGlass.getText().isEmpty())
-                    if(!(rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()))
-                        JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount.\nChoose an order type: Pick up or Delivery");
-                    else
-                        JOptionPane.showMessageDialog(this, "Enter an integer as amount.\nChoose an order type: Pick up or Delivery");
             }
             else { JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount");
                 //if none of the radio buttons are selected or the textField is empty
@@ -193,8 +164,30 @@ public class Label extends JFrame implements ActionListener{
                 pay += totalprice_of_bvg;
                 report = report + " - "+totalprice_of_bvg+" TL\n";
             }
-            JOptionPane.showMessageDialog(this, report);
-            JOptionPane.showMessageDialog(this,	 "You should pay "+pay+" TL");
+
+            String[] values = {"Pick up","Delivery"};
+            double deliveryfee=0.0;
+            Object selected = JOptionPane.showInputDialog(null, "Order type: Pick up/Delivery", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
+            if ( selected != null ){//null if the user cancels.
+                String orderType = selected.toString();
+                report = report + "\n"+"Order type: "+orderType;
+                if (orderType.equals("Delivery")){
+                    if (pay<15 && pay!=0){
+                        deliveryfee=5;
+                    }
+                    else{
+                        deliveryfee = pay*0.1;
+                    }
+                }
+                report = report + " - " + deliveryfee +" TL\n";
+                pay = pay+deliveryfee;
+            }
+            else{
+                System.out.println("User cancelled");
+            }
+
+            JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"You should pay "+pay+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE);
             lblReport.setText(null);
             btnOrder.setEnabled(false);
             list_of_bvr.clear();
