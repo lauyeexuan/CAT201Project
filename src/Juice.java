@@ -18,6 +18,7 @@ public class Juice extends Beverage {
             if(fruit.equals("Orange")) price*=1.25;
             if(fruit.equals("Pineapple")) price*=1.5;
             setPrice(price);
+
         }
         catch(NullPointerException e) {
         }
@@ -25,6 +26,10 @@ public class Juice extends Beverage {
 
     @Override
     public String toString() {
-        return super.toString()+fruit+" juice";
+        if (fruit==null)
+            return "0 glass(es) of juice";
+        else
+            return super.toString()+fruit+" juice";
     }
+
 }
