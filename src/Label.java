@@ -183,8 +183,7 @@ public class Label extends JFrame implements ActionListener{
                 pay = pay+deliveryfee;
             }
 
-
-            String promoCode=(String)JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
+            String promoCode=JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
             if(promoCode.equals("PROMO20")){
                 report = report + "Promotion: 20%\nDiscount: " + df.format(pay*0.20) + "TL";
                 pay = pay *0.80;
@@ -223,6 +222,7 @@ public class Label extends JFrame implements ActionListener{
         return new ImageIcon(bi);
     }
 }
+//haha
 
 
 
