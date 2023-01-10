@@ -5,17 +5,18 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.Border;
-
+import java.text.DecimalFormat;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
-    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize,lblOrder;
+    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize;
     private JComboBox<String> size;
     private JRadioButton rdJuice,rdWater,rdTea,rdCoffee,rdPickup,rdDelivery;
-    private ButtonGroup beverageGroup,orderGroup;
+    private ButtonGroup beverageGroup;
     private JTextField txtGlass;
     private JButton btnAdd,btnOrder;
     int amount_of;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
 
     public Label() {
@@ -104,32 +105,10 @@ public class Label extends JFrame implements ActionListener{
         add(lblGlass);
 
         txtGlass = new JTextField();//a JTextField to get how many glasses of beverage is the user want
-        txtGlass.setSize(50, 25);
+        txtGlass.setSize(70, 25);
         txtGlass.setLocation(220, 165);
         txtGlass.setBackground(new Color	(247, 219, 219));
         add(txtGlass);
-
-        lblOrder=new JLabel("Order type:");
-        lblOrder.setSize(100,25);
-        lblOrder.setLocation(100,200);
-        add(lblOrder);
-
-        orderGroup = new ButtonGroup();
-
-        rdPickup= new JRadioButton("Pick up");
-        rdPickup.setSize(75, 30);
-        rdPickup.setLocation(175, 198);
-        rdPickup.setBackground(Color.PINK);
-        add(rdPickup);
-
-        rdDelivery= new JRadioButton("Delivery");
-        rdDelivery.setSize(75, 30);
-        rdDelivery.setLocation(250, 198);
-        rdDelivery.setBackground(Color.PINK);
-        add(rdDelivery);
-
-        orderGroup.add(rdDelivery);
-        orderGroup.add(rdPickup);
 
 
         btnAdd = new JButton("Add");
@@ -153,7 +132,7 @@ public class Label extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String size_of = (String)size.getSelectedItem();
         if(e.getSource().equals(btnAdd)) {
-            if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) && (rdPickup.isSelected() || rdDelivery.isSelected())) {
+            if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) ) {
                 try {
                     amount_of  = Integer.parseInt(txtGlass.getText().trim());
                     Beverage bvg;
@@ -165,19 +144,11 @@ public class Label extends JFrame implements ActionListener{
                     list_of_bvr.add(bvg);
                     lblReport.setText(bvg.toString()+" added");
                     beverageGroup.clearSelection();
-                    orderGroup.clearSelection();
                     btnOrder.setEnabled(true);
                 }
                 catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
                     JOptionPane.showMessageDialog(this, "Enter an integer as amount");
                 }
-            }
-            else if(!(rdPickup.isSelected() || rdDelivery.isSelected())){
-                if (txtGlass.getText().isEmpty())
-                    if(!(rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()))
-                        JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount.\nChoose an order type: Pick up or Delivery");
-                    else
-                        JOptionPane.showMessageDialog(this, "Enter an integer as amount.\nChoose an order type: Pick up or Delivery");
             }
             else { JOptionPane.showMessageDialog(this, "Choose a beverage type and enter an amount");
                 //if none of the radio buttons are selected or the textField is empty
@@ -193,8 +164,45 @@ public class Label extends JFrame implements ActionListener{
                 pay += totalprice_of_bvg;
                 report = report + " - "+totalprice_of_bvg+" TL\n";
             }
-            JOptionPane.showMessageDialog(this, report);
-            JOptionPane.showMessageDialog(this,	 "You should pay "+pay+" TL");
+
+            String[] values = {"Pick up","Delivery"};
+            double deliveryfee=0.00;
+            Object selected = JOptionPane.showInputDialog(null, "Order type: Pick up/Delivery", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
+            if ( selected != null ){//null if the user cancels.
+                String orderType = selected.toString();
+                report = report + "\n"+"Order type: "+orderType;
+                if (orderType.equals("Delivery")){
+                    if (pay<15 && pay!=0){
+                        deliveryfee=5;
+                    }
+                    else{
+                        deliveryfee = Double.parseDouble(df.format(pay*0.10));
+                    }
+                }
+                report = report + " - " + deliveryfee +" TL\n";
+                pay = pay+deliveryfee;
+            }
+
+            String promoCode=JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
+            if(promoCode.equals("PROMO20")){
+                report = report + "Promotion: 20%\nDiscount: " + df.format(pay*0.20) + "TL";
+                pay = pay *0.80;
+            }
+            else if (promoCode.equals("PROMO30")){
+                report = report + "Promotion: 30%\nDiscount: " + df.format(pay*0.30) + "TL";
+                pay = pay*0.70;
+            }
+
+
+
+            ImageIcon icon = new ImageIcon("order.png");
+            ImageIcon scaledicon=resize(icon,100,100);
+            JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
+
+
+            icon=new ImageIcon("checkout.png");
+            scaledicon=resize(icon,100,100);
+            JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
             lblReport.setText(null);
             btnOrder.setEnabled(false);
             list_of_bvr.clear();
@@ -214,6 +222,7 @@ public class Label extends JFrame implements ActionListener{
         return new ImageIcon(bi);
     }
 }
+//haha
 
 
 
