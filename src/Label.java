@@ -14,10 +14,17 @@ public class Label extends JFrame implements ActionListener{
     private JRadioButton rdJuice,rdWater,rdTea,rdCoffee,rdPickup,rdDelivery;
     private ButtonGroup beverageGroup;
     private JTextField txtGlass;
-    private JButton btnAdd,btnOrder;
+    private JButton btnAdd,btnOrder,btnEdit;
     int amount_of;
     private static final DecimalFormat df = new DecimalFormat("0.00");
-    ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
+    static ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
+
+    static String[] report= new String[30];
+
+    static String output="";
+    static double pay=0.0;
+
+    static int reportIndex=0;
 
     public Label() {
         setLayout(null);
@@ -31,6 +38,7 @@ public class Label extends JFrame implements ActionListener{
         getContentPane().setBackground(Color.PINK);
         init();
         btnAdd.addActionListener(this);
+        btnEdit.addActionListener(this);
         btnOrder.addActionListener(this);
         setVisible(true);
 
@@ -116,9 +124,15 @@ public class Label extends JFrame implements ActionListener{
         btnAdd.setLocation(100, 230);
         add(btnAdd);
 
+        btnEdit = new JButton("Edit");
+        btnEdit.setSize(120, 40);
+        btnEdit.setLocation(240, 230);
+        btnEdit.setEnabled(false);
+        add(btnEdit);
+
         btnOrder = new JButton("Order");
         btnOrder.setSize(120, 40);
-        btnOrder.setLocation(280, 230);
+        btnOrder.setLocation(400, 230);
         btnOrder.setEnabled(false);
         add(btnOrder);
 
@@ -130,6 +144,7 @@ public class Label extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
         String size_of = (String)size.getSelectedItem();
         if(e.getSource().equals(btnAdd)) {
             if( (rdJuice.isSelected() || rdTea.isSelected() || rdCoffee.isSelected() || rdWater.isSelected()) && !(txtGlass.getText().isEmpty()) ) {
@@ -140,10 +155,21 @@ public class Label extends JFrame implements ActionListener{
                     else if(rdWater.isSelected())  { bvg = new Water(size_of,amount_of,this); }
                     else if(rdTea.isSelected())    { bvg = new Tea(size_of,amount_of,this); }
                     else { bvg = new Coffee(size_of,amount_of,this); }
+
                     txtGlass.setText(null);
                     list_of_bvr.add(bvg);
+
+                    report[reportIndex] = reportIndex+1+". "+bvg.toString();
+                    double totalprice_of_bvg = bvg.getAmount() * bvg.getPrice();
+                    pay += totalprice_of_bvg;
+                    report[reportIndex] = report[reportIndex] + " - "+totalprice_of_bvg+" TL\n";
+                    output = output+report[reportIndex];
+                    ++reportIndex;
+
+
                     lblReport.setText(bvg.toString()+" added");
                     beverageGroup.clearSelection();
+                    btnEdit.setEnabled(true);
                     btnOrder.setEnabled(true);
                 }
                 catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
@@ -154,23 +180,41 @@ public class Label extends JFrame implements ActionListener{
                 //if none of the radio buttons are selected or the textField is empty
             }
         }
-        if(e.getSource().equals(btnOrder)) {
-            String report = "";
-            double pay=0.0;
-            for(int i=0;i<list_of_bvr.size();i++) {
-                Beverage bvgi = list_of_bvr.get(i);
-                report += bvgi.toString();
-                double totalprice_of_bvg = bvgi.getAmount() * bvgi.getPrice();
-                pay += totalprice_of_bvg;
-                report = report + " - "+totalprice_of_bvg+" TL\n";
-            }
 
+        if (e.getSource().equals(btnEdit)) {
+//            for(int i=0;i<list_of_bvr.size();i++) {
+//                Beverage bvgi = list_of_bvr.get(i);
+//                report += i+1+". "+bvgi.toString();
+//                double totalprice_of_bvg = bvgi.getAmount() * bvgi.getPrice();
+//                pay += totalprice_of_bvg;
+//                report = report + " - "+totalprice_of_bvg+" TL\n";
+//            }
+            Object editObj = JOptionPane.showInputDialog(null, output+"\nRemove which order?", "Edit order", JOptionPane.QUESTION_MESSAGE);
+            if(editObj != null) {
+                try {
+                    String orderEdited = editObj.toString();
+                    int orderEditedInt=Integer.parseInt(orderEdited);
+                    if (orderEditedInt< 1 || orderEditedInt > list_of_bvr.size()) {
+                        JOptionPane.showMessageDialog(this, "Order out of range!");
+                    }
+                    else{
+                        list_of_bvr.remove(orderEditedInt-1);
+
+                    }
+                }
+                catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
+                    JOptionPane.showMessageDialog(this, "Enter an integer as amount");
+                }
+            }
+        }
+
+        if(e.getSource().equals(btnOrder)) {
             String[] values = {"Pick up","Delivery"};
             double deliveryfee=0.00;
             Object selected = JOptionPane.showInputDialog(null, "Order type: Pick up/Delivery", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
             if ( selected != null ){//null if the user cancels.
                 String orderType = selected.toString();
-                report = report + "\n"+"Order type: "+orderType;
+                report[reportIndex] = "Order type: "+orderType;
                 if (orderType.equals("Delivery")){
                     if (pay<15 && pay!=0){
                         deliveryfee=5;
@@ -179,33 +223,44 @@ public class Label extends JFrame implements ActionListener{
                         deliveryfee = Double.parseDouble(df.format(pay*0.10));
                     }
                 }
-                report = report + " - " + deliveryfee +" TL\n";
+                report[reportIndex] = report[reportIndex] + " - " + deliveryfee +" TL\n";
+                output = output+report[reportIndex];
                 pay = pay+deliveryfee;
             }
 
-            String promoCode=JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
-            if(promoCode.equals("PROMO20")){
-                report = report + "Promotion: 20%\nDiscount: " + df.format(pay*0.20) + "TL";
-                pay = pay *0.80;
+
+            Object promocodeObj =JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
+            if(promocodeObj != null) {
+                String promoCode = promocodeObj.toString();
+                if (promoCode.equals("PROMO20")) {
+                    report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL";
+                    pay = pay * 0.80;
+                } else if (promoCode.equals("PROMO30")) {
+                    report[reportIndex] = report[reportIndex] + "Promotion: 30%\nDiscount: " + df.format(pay * 0.30) + "TL";
+                    pay = pay * 0.70;
+                } else {
+                    report[reportIndex] = report[reportIndex] + "Discount: 0 TL";
+                }
             }
-            else if (promoCode.equals("PROMO30")){
-                report = report + "Promotion: 30%\nDiscount: " + df.format(pay*0.30) + "TL";
-                pay = pay*0.70;
-            }
+
 
 
 
             ImageIcon icon = new ImageIcon("order.png");
             ImageIcon scaledicon=resize(icon,100,100);
-            JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
+            JOptionPane.showMessageDialog(this, output,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
 
 
             icon=new ImageIcon("checkout.png");
             scaledicon=resize(icon,100,100);
             JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
             lblReport.setText(null);
+            btnEdit.setEnabled(false);
             btnOrder.setEnabled(false);
             list_of_bvr.clear();
+            reportIndex=0;// set to zero after every order
+            output="";
+            pay=0;
         }
     }
 
