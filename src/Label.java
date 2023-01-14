@@ -2,10 +2,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.text.DecimalFormat;
+import java.util.stream.*;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
@@ -17,7 +21,7 @@ public class Label extends JFrame implements ActionListener{
     private JButton btnAdd,btnOrder,btnEdit;
     int amount_of;
     private static final DecimalFormat df = new DecimalFormat("0.00");
-    static ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
+    ArrayList<Beverage> list_of_bvr = new ArrayList<Beverage>();
 
     static String[] report= new String[30];
 
@@ -25,6 +29,21 @@ public class Label extends JFrame implements ActionListener{
     static double pay=0.0;
 
     static int reportIndex=0;
+
+    public static String[] removeOrder(String[] input, int item) {
+            String[] output = new String[input.length - 1];
+            if (input.length == 1) {}
+            else{
+                int i=0;
+                while(i<item){
+                    output[i]=input[i];
+                    ++i;
+                }
+                for(int j=i; j< input.length-1-i;j++)
+                    output[j]=input[j+1];
+            }
+            return output;
+    }
 
     public Label() {
         setLayout(null);
@@ -132,7 +151,7 @@ public class Label extends JFrame implements ActionListener{
 
         btnOrder = new JButton("Order");
         btnOrder.setSize(120, 40);
-        btnOrder.setLocation(400, 230);
+        btnOrder.setLocation(380, 230);
         btnOrder.setEnabled(false);
         add(btnOrder);
 
@@ -198,8 +217,13 @@ public class Label extends JFrame implements ActionListener{
                         JOptionPane.showMessageDialog(this, "Order out of range!");
                     }
                     else{
+                        double amountRemoved=list_of_bvr.get(orderEditedInt-1).getAmount() * list_of_bvr.get(orderEditedInt-1).getPrice();
+                        pay -= amountRemoved;
+                        report =  removeOrder( report, orderEditedInt-1);
+//                        for(int i=0;i<report.length;i++)
+//                            System.out.println(report[i]);
+                        lblReport.setText(list_of_bvr.get(orderEditedInt-1).toString()+" removed");
                         list_of_bvr.remove(orderEditedInt-1);
-
                     }
                 }
                 catch(NumberFormatException e1) {//if written data in TextField can't be converted to an integer[String,char,double etc...]
@@ -226,41 +250,42 @@ public class Label extends JFrame implements ActionListener{
                 report[reportIndex] = report[reportIndex] + " - " + deliveryfee +" TL\n";
                 output = output+report[reportIndex];
                 pay = pay+deliveryfee;
-            }
+
+                Object promocodeObj =JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE,null,null,"Press OK if no");
+                if(promocodeObj != null) {
+                    String promoCode = promocodeObj.toString();
+                    if (promoCode.equals("PROMO20")) {
+                        report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL";
+                        pay = pay * 0.80;
+                    } else if (promoCode.equals("PROMO30")) {
+                        report[reportIndex] = report[reportIndex] + "Promotion: 30%\nDiscount: " + df.format(pay * 0.30) + "TL";
+                        pay = pay * 0.70;
+                    } else {
+                        report[reportIndex] = report[reportIndex] + "Discount: 0 TL";
+                    }
+
+                    ImageIcon icon = new ImageIcon("order.png");
+                    ImageIcon scaledicon=resize(icon,100,100);
+                    JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
 
 
-            Object promocodeObj =JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE);
-            if(promocodeObj != null) {
-                String promoCode = promocodeObj.toString();
-                if (promoCode.equals("PROMO20")) {
-                    report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL";
-                    pay = pay * 0.80;
-                } else if (promoCode.equals("PROMO30")) {
-                    report[reportIndex] = report[reportIndex] + "Promotion: 30%\nDiscount: " + df.format(pay * 0.30) + "TL";
-                    pay = pay * 0.70;
-                } else {
-                    report[reportIndex] = report[reportIndex] + "Discount: 0 TL";
+                    icon=new ImageIcon("checkout.png");
+                    scaledicon=resize(icon,100,100);
+                    JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
+                    lblReport.setText(null);
+                    btnEdit.setEnabled(false);
+                    btnOrder.setEnabled(false);
+                    list_of_bvr.clear();
+                    reportIndex=0;// set to zero after every order
+                    output="";
+                    pay=0;
                 }
+
             }
 
 
 
 
-            ImageIcon icon = new ImageIcon("order.png");
-            ImageIcon scaledicon=resize(icon,100,100);
-            JOptionPane.showMessageDialog(this, output,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
-
-
-            icon=new ImageIcon("checkout.png");
-            scaledicon=resize(icon,100,100);
-            JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
-            lblReport.setText(null);
-            btnEdit.setEnabled(false);
-            btnOrder.setEnabled(false);
-            list_of_bvr.clear();
-            reportIndex=0;// set to zero after every order
-            output="";
-            pay=0;
         }
     }
 
