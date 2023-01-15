@@ -302,7 +302,6 @@ public class Label extends JFrame implements ActionListener{
         return new ImageIcon(bi);
     }
 }
-//haha
 
 
 
