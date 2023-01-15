@@ -309,8 +309,7 @@ public class Label extends JFrame implements ActionListener{
                     ImageIcon icon = new ImageIcon("order.png");
                     ImageIcon scaledicon=resize(icon,100,100);
                     JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
-
-
+                    
                     icon=new ImageIcon("checkout.png");
                     scaledicon=resize(icon,100,100);
                     JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
