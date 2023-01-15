@@ -25,9 +25,10 @@ public class Label extends JFrame implements ActionListener{
 
     static String[] report= new String[30];
 
+    static String remark;
+
     static String output="";
     static double pay=0.0;
-
     static int reportIndex=0;
 
     public static String[] removeOrder(String[] input, int item) {
@@ -85,7 +86,7 @@ public class Label extends JFrame implements ActionListener{
         add (lblcupsize);
 
         lblJuice=new JLabel();
-        lblJuice.setBounds(150,116,27,27);
+        lblJuice.setBounds(152,116,27,27);
         lblJuice.setIcon(resize(new ImageIcon("Juice.png"),lblJuice.getWidth(),lblJuice.getHeight()));
         add (lblJuice);
 
@@ -95,12 +96,12 @@ public class Label extends JFrame implements ActionListener{
         add (lblWater);
 
         lblTea=new JLabel();
-        lblTea.setBounds(295,115,28,28);
+        lblTea.setBounds(297,115,25,28);
         lblTea.setIcon(resize(new ImageIcon("Tea.png"),lblTea.getWidth(),lblTea.getHeight()));
         add (lblTea);
 
         lblcoffee=new JLabel();
-        lblcoffee.setBounds(382,118,26,26);
+        lblcoffee.setBounds(383,118,26,26);
         lblcoffee.setIcon(resize(new ImageIcon("Coffee.png"),lblcoffee.getWidth(),lblcoffee.getHeight()));
         add (lblcoffee);
 
@@ -111,7 +112,7 @@ public class Label extends JFrame implements ActionListener{
 
         lblbgtexture=new JLabel();
         lblbgtexture.setBounds(-55,-100,700,700);
-        lblbgtexture.setIcon(resize(new ImageIcon("texture2.png"),lblbgtexture.getWidth(),lblbgtexture.getHeight()));
+        lblbgtexture.setIcon(resize(new ImageIcon("texture.png"),lblbgtexture.getWidth(),lblbgtexture.getHeight()));
         add (lblbgtexture);
 
         lblscene=new JLabel();
@@ -137,29 +138,29 @@ public class Label extends JFrame implements ActionListener{
         beverageGroup = new ButtonGroup();
 
         rdJuice = new JRadioButton("Juice");
-        rdJuice.setSize(75, 50);
+        rdJuice.setSize(55, 50);
         rdJuice.setLocation(100, 110);
-//      rdJuice.setBackground(Colour.white);
+        rdJuice.setBackground(new Color(243,243,243, 200));
         add(rdJuice);
 
         lbljuice= new JLabel();
 
         rdWater = new JRadioButton("Water");
-        rdWater.setSize(75, 50);
+        rdWater.setSize(58, 50);
         rdWater.setLocation(175, 110);
-//        rdWater.setBackground(Colour.white);
+        rdWater.setBackground(new Color(243,243,243, 200));
         add(rdWater);
 
         rdTea = new JRadioButton("Tea");
-        rdTea.setSize(75, 50);
+        rdTea.setSize(47, 50);
         rdTea.setLocation(250, 110);
-//        rdTea.setBackground(Color.white);
+        rdTea.setBackground(new Color(243,243,243, 200));
         add(rdTea);
 
         rdCoffee = new JRadioButton("Coffee");
-        rdCoffee.setSize(75, 50);
+        rdCoffee.setSize(63, 50);
         rdCoffee.setLocation(325, 110);
-//        rdCoffee.setBackground(Color.white);
+        rdCoffee.setBackground(new Color(243,243,243, 200));
         add(rdCoffee);
 
         beverageGroup.add(rdJuice);
@@ -175,7 +176,7 @@ public class Label extends JFrame implements ActionListener{
         txtGlass = new JTextField();//a JTextField to get how many glasses of beverage is the user want
         txtGlass.setSize(70, 25);
         txtGlass.setLocation(220, 165);
-        txtGlass.setBackground(new Color	(247, 219, 219));
+        txtGlass.setBackground(Color.white);
         add(txtGlass);
 
 
