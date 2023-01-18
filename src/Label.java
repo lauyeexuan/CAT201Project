@@ -305,13 +305,15 @@ public class Label extends JFrame implements ActionListener{
                         report[reportIndex] = report[reportIndex] + "Discount: 0 TL\n";
                     }
 
-                    Object remarkObj = JOptionPane.showInputDialog(null, "Any remark?", "Remark", JOptionPane.QUESTION_MESSAGE, null, null, "Press OK if no");
-                    if(remarkObj != null) {
+                    Object remarkObj = JOptionPane.showInputDialog(null, "Any remark?", "Remark", JOptionPane.QUESTION_MESSAGE);
+                    if (remarkObj != null) {
                         String remark = remarkObj.toString();
-                        report[reportIndex] = report[reportIndex] + "Remark: " + remark;
-                    }else{
-                        report[reportIndex] = report[reportIndex] + "Remark: -";
+                        if (!(remark.equals(""))) {
+                            report[reportIndex] = report[reportIndex] + "Remark: " + remark + "\n";
+                        } else {
+                            report[reportIndex] = report[reportIndex] + "Remark: -\n";
                         }
+
 
                         ImageIcon icon = new ImageIcon("order.png");
                         ImageIcon scaledicon = resize(icon, 100, 100);
@@ -324,12 +326,16 @@ public class Label extends JFrame implements ActionListener{
                         btnEdit.setEnabled(false);
                         btnOrder.setEnabled(false);
                         list_of_bvr.clear();
+                        for (int i = 0; i <= reportIndex; i++) {
+                            report[i] = "";
+                        }
                         reportIndex = 0;// set to zero after every order
                         output = "";
                         pay = 0;
                     }
 
                 }
+            }
 
 
             }
