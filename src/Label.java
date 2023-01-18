@@ -75,9 +75,9 @@ public class Label extends JFrame implements ActionListener{
         size.setSelectedIndex(0);//default selection is small
         size.setSize(100, 35);
         size.setLocation(100, 50);
-        Border border= BorderFactory.createLineBorder(Color.BLACK);
+        Border border= BorderFactory.createLineBorder(Color.black);
         size.setBorder(border);
-        size.setBackground(Color.white);
+        size.setBackground(Color.WHITE);
         add(size);
 
         lblcupsize=new JLabel();
@@ -86,22 +86,22 @@ public class Label extends JFrame implements ActionListener{
         add (lblcupsize);
 
         lblJuice=new JLabel();
-        lblJuice.setBounds(152,116,27,27);
+        lblJuice.setBounds(158,116,27,27);
         lblJuice.setIcon(resize(new ImageIcon("Juice.png"),lblJuice.getWidth(),lblJuice.getHeight()));
         add (lblJuice);
 
         lblWater=new JLabel();
-        lblWater.setBounds(227,117,25,25);
+        lblWater.setBounds(237,117,25,25);
         lblWater.setIcon(resize(new ImageIcon("Bottle.png"),lblWater.getWidth(),lblWater.getHeight()));
         add (lblWater);
 
         lblTea=new JLabel();
-        lblTea.setBounds(297,115,25,28);
+        lblTea.setBounds(305,115,25,28);
         lblTea.setIcon(resize(new ImageIcon("Tea.png"),lblTea.getWidth(),lblTea.getHeight()));
         add (lblTea);
 
         lblcoffee=new JLabel();
-        lblcoffee.setBounds(383,118,26,26);
+        lblcoffee.setBounds(392,118,26,26);
         lblcoffee.setIcon(resize(new ImageIcon("Coffee.png"),lblcoffee.getWidth(),lblcoffee.getHeight()));
         add (lblcoffee);
 
@@ -138,7 +138,7 @@ public class Label extends JFrame implements ActionListener{
         beverageGroup = new ButtonGroup();
 
         rdJuice = new JRadioButton("Juice");
-        rdJuice.setSize(55, 50);
+        rdJuice.setSize(57, 50);
         rdJuice.setLocation(100, 110);
         rdJuice.setBackground(new Color(243,243,243, 200));
         add(rdJuice);
@@ -146,20 +146,20 @@ public class Label extends JFrame implements ActionListener{
         lbljuice= new JLabel();
 
         rdWater = new JRadioButton("Water");
-        rdWater.setSize(58, 50);
-        rdWater.setLocation(175, 110);
+        rdWater.setSize(60, 50);
+        rdWater.setLocation(182, 110);
         rdWater.setBackground(new Color(243,243,243, 200));
         add(rdWater);
 
         rdTea = new JRadioButton("Tea");
         rdTea.setSize(47, 50);
-        rdTea.setLocation(250, 110);
+        rdTea.setLocation(255, 110);
         rdTea.setBackground(new Color(243,243,243, 200));
         add(rdTea);
 
         rdCoffee = new JRadioButton("Coffee");
-        rdCoffee.setSize(63, 50);
-        rdCoffee.setLocation(325, 110);
+        rdCoffee.setSize(65, 50);
+        rdCoffee.setLocation(330, 110);
         rdCoffee.setBackground(new Color(243,243,243, 200));
         add(rdCoffee);
 
@@ -296,19 +296,19 @@ public class Label extends JFrame implements ActionListener{
                 if (promocodeObj != null) {
                     String promoCode = promocodeObj.toString();
                     if (promoCode.equals("PROMO20")) {
-                        report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL";
+                        report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL\n";
                         pay = pay * 0.80;
                     } else if (promoCode.equals("PROMO30")) {
-                        report[reportIndex] = report[reportIndex] + "Promotion: 30%\nDiscount: " + df.format(pay * 0.30) + "TL";
+                        report[reportIndex] = report[reportIndex] + "Promotion: 30%\nDiscount: " + df.format(pay * 0.30) + "TL\n";
                         pay = pay * 0.70;
                     } else {
-                        report[reportIndex] = report[reportIndex] + "Discount: 0 TL";
+                        report[reportIndex] = report[reportIndex] + "Discount: 0 TL\n";
                     }
 
                     Object remarkObj = JOptionPane.showInputDialog(null, "Any remark?", "Remark", JOptionPane.QUESTION_MESSAGE, null, null, "Press OK if no");
                     if(remarkObj != null) {
                         String remark = remarkObj.toString();
-                        report[reportIndex] = "Remark: " + remark;
+                        report[reportIndex] = report[reportIndex] + "Remark: " + remark;
                     }else{
                         report[reportIndex] = report[reportIndex] + "Remark: -";
                         }
