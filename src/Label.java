@@ -13,7 +13,7 @@ import java.util.stream.*;
 
 public class Label extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
-    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize,lblCoffee, lblJuice,lblTea,lblcoffee,lblWater,lblbgtexture, lblbgcoffeebean, lblbasket,lblscene,lblcoffeecup,lbllogo;
+    private JLabel lblSize,lblBev,lblGlass,lblReport,lbljuice,lblcupsize,lblCoffee, lblJuice,lblTea,lblcoffee,lblWater,lblbgtexture, lblbgcoffeebean, lblbasket,lblscene,lblcoffeecup;
     private JComboBox<String> size;
     private JRadioButton rdJuice,rdWater,rdTea,rdCoffee,rdPickup,rdDelivery;
     private ButtonGroup beverageGroup;
@@ -129,11 +129,6 @@ public class Label extends JFrame implements ActionListener{
         lblcoffeecup.setBounds(460,130,200,230);
         lblcoffeecup.setIcon(resize(new ImageIcon("coffeecup.png"),lblcoffeecup.getWidth(),lblcoffeecup.getHeight()));
         add (lblcoffeecup);
-
-        lbllogo=new JLabel();
-        lbllogo.setBounds(480,5,100,100);
-        lbllogo.setIcon(resize(new ImageIcon("logo.png"),lbllogo.getWidth(),lbllogo.getHeight()));
-        add (lbllogo);
 
         lblBev = new JLabel("Select which type of beverage you want to order:");//a JLabel that labels the radioButtons
         lblBev.setSize(500, 50);
