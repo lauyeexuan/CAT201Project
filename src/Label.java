@@ -278,23 +278,22 @@ public class Label extends JFrame implements ActionListener{
             String[] values = {"Pick up","Delivery"};
             double deliveryfee=0.00;
             Object selected = JOptionPane.showInputDialog(null, "Order type: Pick up/Delivery", "Selection", JOptionPane.DEFAULT_OPTION, null, values, "0");
-            if ( selected != null ){//null if the user cancels.
+            if ( selected != null ) {//null if the user cancels.
                 String orderType = selected.toString();
-                report[reportIndex] = "Order type: "+orderType;
-                if (orderType.equals("Delivery")){
-                    if (pay<15 && pay!=0){
-                        deliveryfee=5;
-                    }
-                    else{
-                        deliveryfee = Double.parseDouble(df.format(pay*0.10));
+                report[reportIndex] = "Order type: " + orderType;
+                if (orderType.equals("Delivery")) {
+                    if (pay < 15 && pay != 0) {
+                        deliveryfee = 5;
+                    } else {
+                        deliveryfee = Double.parseDouble(df.format(pay * 0.10));
                     }
                 }
-                report[reportIndex] = report[reportIndex] + " - " + deliveryfee +" TL\n";
-                output = output+report[reportIndex];
-                pay = pay+deliveryfee;
+                report[reportIndex] = report[reportIndex] + " - " + deliveryfee + " TL\n";
+                output = output + report[reportIndex];
+                pay = pay + deliveryfee;
 
-                Object promocodeObj =JOptionPane.showInputDialog(null,"Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE,null,null,"Press OK if no");
-                if(promocodeObj != null) {
+                Object promocodeObj = JOptionPane.showInputDialog(null, "Any promo code?", "Promo code", JOptionPane.QUESTION_MESSAGE, null, null, "Press OK if no");
+                if (promocodeObj != null) {
                     String promoCode = promocodeObj.toString();
                     if (promoCode.equals("PROMO20")) {
                         report[reportIndex] = report[reportIndex] + "Promotion: 20%\nDiscount: " + df.format(pay * 0.20) + "TL";
@@ -306,28 +305,36 @@ public class Label extends JFrame implements ActionListener{
                         report[reportIndex] = report[reportIndex] + "Discount: 0 TL";
                     }
 
-                    ImageIcon icon = new ImageIcon("order.png");
-                    ImageIcon scaledicon=resize(icon,100,100);
-                    JOptionPane.showMessageDialog(this, report,"Order Summary",JOptionPane.INFORMATION_MESSAGE,scaledicon);
-                    
-                    icon=new ImageIcon("checkout.png");
-                    scaledicon=resize(icon,100,100);
-                    JOptionPane.showMessageDialog(this,"You should pay "+df.format(pay)+" TL","Checkout",JOptionPane.INFORMATION_MESSAGE,scaledicon);
-                    lblReport.setText(null);
-                    btnEdit.setEnabled(false);
-                    btnOrder.setEnabled(false);
-                    list_of_bvr.clear();
-                    reportIndex=0;// set to zero after every order
-                    output="";
-                    pay=0;
+                    Object remarkObj = JOptionPane.showInputDialog(null, "Any remark?", "Remark", JOptionPane.QUESTION_MESSAGE, null, null, "Press OK if no");
+                    if(remarkObj != null) {
+                        String remark = remarkObj.toString();
+                        report[reportIndex] = "Remark: " + remark;
+                    }else{
+                        report[reportIndex] = report[reportIndex] + "Remark: -";
+                        }
+
+                        ImageIcon icon = new ImageIcon("order.png");
+                        ImageIcon scaledicon = resize(icon, 100, 100);
+                        JOptionPane.showMessageDialog(this, report, "Order Summary", JOptionPane.INFORMATION_MESSAGE, scaledicon);
+
+                        icon = new ImageIcon("checkout.png");
+                        scaledicon = resize(icon, 100, 100);
+                        JOptionPane.showMessageDialog(this, "You should pay " + df.format(pay) + " TL", "Checkout", JOptionPane.INFORMATION_MESSAGE, scaledicon);
+                        lblReport.setText(null);
+                        btnEdit.setEnabled(false);
+                        btnOrder.setEnabled(false);
+                        list_of_bvr.clear();
+                        reportIndex = 0;// set to zero after every order
+                        output = "";
+                        pay = 0;
+                    }
+
                 }
+
 
             }
 
 
-
-
-        }
     }
 
     public static void main(String[] args) {
